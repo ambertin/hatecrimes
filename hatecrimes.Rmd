@@ -1,6 +1,6 @@
 ---
 title: "Project Report"
-author: "Audrey Bertin & Marissa Freed"
+author: "Audrey Bertin and Marissa Freed"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: html_document
 ---
