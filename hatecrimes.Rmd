@@ -1,0 +1,640 @@
+---
+title: "Project Report"
+author: "Audrey Bertin & Marissa Freed"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: html_document
+---
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(mosaic)
+library(readr)
+library(GGally)
+
+hate_crimes <- read_csv("~/Desktop/MTH 220/group-D-data.csv")
+```
+
+```{r}
+hate_crimes_minusDC <- hate_crimes %>% 
+  filter(state != "District of Columbia")
+```
+
+
+# Abstract
+
+This report considers the economic and ethnic demographics of states and how they are connected with hate crime rate. In order to determine which characteristics were most strongly correlated with hate crimes, several variables including Gini Index, median household income, and the share of the population with a high school degree were compared with hate crime rates as measured by the Federal Bureau of Investigation (FBI) and Southern Poverty Law Center (SPLC). It was determined that few variables had a very strong correlation, and the variables among both hate crime rates that were the most correlated were associated with the proportion of Trump voters, median income, and inequality. Multiple regression models were also created for each hate crime rate source, though collinearity among some of the variables likely affected their coefficients.
+
+# Introduction
+
+Mentions of hate crimes have appeared in larger numbers the news lately than in the past, with a noticeable increase in incidents since Donald Trump's election in 2016. This study attempted to determine how demographic statistics affect hate crimes, in order to better learn how to predict them. Several specific questions of interest include:
+
+1) Is the Trump voter rate strongly, and positively, associated with hate crimes? Is this the same for the share of the population with a high school degree?
+
+Due to the increase in hate crimes after the 2016 election, and the fact that on average, Trump voters had a lower level of education than Clinton voters ([source](http://fivethirtyeight.com/features/education-not-income-predicted-who-would-vote-for-trump/)), this study was particularly interested in testing the hypothesis that `share_voters_voted_Trump` and `share_population_with_high_school_degree` are both more strongly correlated with hate crime rate than the other variables.
+
+2) Which demographic statistics are the best predictors of hate crimes? Can we develop a multiple regression model to predict hate crime rate?
+
+This information would be important in order to help law enforcement agencies determine where special lookout for hate crimes should be used, and could also be used by people who are looking to move to a particular area. If a person is in a group that is affected by hate crimes (LGBT, Jewish, etc.), then that person could look at the demographics for the place they are interested in moving to and determine the danger level of it.
+
+
+In order to answer these questions, we paired each explanatory variable with the two response variables - FBI hate crime rate and SPLC hate crime rate - to determine the correlations. Then, we performed backward elimination to determine the best multiple regression model for each data source.
+
+
+# Data
+
+The dataset comes from FiveThirtyEight and is a combination of hate crime data from the Federal Bureau of Investigation (FBI) and Southern Poverty Law Center (SPLC) and data on economic and ethnic demographics collected by the US Census Bureau.
+
+All of the variables except `state` are continuous and numerical:
+
+1) 'median_household_income' represents the average household income in the state as measured in 2016 (dollars).
+
+2) 'share_unemployed_seasonal' represents the share (percentage) of the population that was unemployed in September 2016, adjusted for the season of the year.
+
+3) 'share_population_in_metro_areas' represents the proportion (percentage) of the population that lives in metropolitan/urban areas.
+
+4) 'share_population_with_high_school_degree' is the proportion (percentage) of adults aged 25+ who graduated from high school.
+
+5) 'share_non_citizen' is the proportion (percentage) of the population that are not U.S. citizens.
+
+6) 'share_white_poverty' is the proportion (percentage) of white residents who are living in poverty in the area.
+
+7) 'gini_index' is the 2015 gini index value. The gini value is a measure of economic inequality between 0 (0%) and 1 (100%) with 0 representing perfect equality and 1 representing perfect inequality)
+
+8) 'share_non_white' is the proportion (percentage) of the population that was not white in 2015
+
+9) 'share_voters_voted_trump' is the proportion (percentage) of voters who voted for Donald Trump in the 2016 election.
+
+The response variables `hate_crimes_per_100k_splc` and `avg_hatecrimes_per_100k_fbi` are both measured as the number of hate crimes per 100,000 people.
+
+The sample, each state's summary, is taken from the population of the entire United States. Most explanatory variables were calculated by summarizing Census Bureau data collected for each state, while `share_voters_voted_trump` was calculated with 2016 election data. These values likely do not account for all people in the state since some people are not legal residents and therefore would not fill out the Census. 
+
+In order to calculate hate crime rates, the FBI bases its rate on official criminal charges for hate crime, and does not provide a way for individuals to submit incident reports.
+
+The SPLC hate crime rate is based on a collection of incident reports submitted on [their website](https://www.splcenter.org/reporthate). As a result, this rate is much lower than the FBI rate for all states.
+
+It is important to note that both reported hate crime rates are likely to be inaccurate when compared to the true rate. This is due to the fact that many hate crimes are not reported, either by the victim to local law enforcement or from police to the FBI. In order for the FBI to receive hate crime reports, local law enforcement agencies must actively collect and submit this data to the state, which then submits it to the FBI. This often does not happen. Thousands of police agencies have also completely opted out of the FBI's hate crime program, and don't report any data. 
+
+Pro-Publica did an [investigation](https://www.propublica.org/article/why-america-fails-at-gathering-hate-crime-statistics) into this problem, and found that while only 6,212 hate crimes were reported to the FBI in 2016, true estimates place the number at 250,000 hate crimes. This means that the hate crime data available is likely quite inaccurate.
+
+Each state's hate crime rate accuracy is also likely to be different, as states define hate crimes differently from one another--for example, Alabama's hate-crime statute does not apply to crimes based on sexual orientation. As a result, many cases in that may be considered hate crimes in some states are not reported as such in others.
+
+
+# Results
+
+In order determine which variables were most strongly correlated with hate crime rate, a regression line for each explanatory variable was calculated. This was completed twice: once for the FBI response variable, and once for the SPLC response variable. 
+
+During these calculations, it became clear that the FBI hate crime rate for Washington D.C. was an outlier, at more than twice the size of the next largest rate. While not used in the final conclusions, the regression lines for each variable were recalculated with the data for Washington D.C. removed, in order to determine if the most strongly correlated explanatory variables were different.
+
+The SPLC hate crime rate for Washington, D.C. also appeared to be an outlier, so the same calculations without the district included were done just as with the FBI data.
+
+The results for the calculations are below:
+
+## Using FBI Data:
+
+### 1) Median household income: (R-squared = 0.1013)
+
+
+```{r, warning = FALSE}
+income_FBI <- lm(avg_hatecrimes_per_100k_fbi ~ median_household_income, data = hate_crimes)
+summary(income_FBI)
+
+
+ggplot(data = hate_crimes, aes(x = median_household_income, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.05863)
+
+```{r}
+income_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ median_household_income, data = hate_crimes_minusDC)
+summary(income_FBI_noDC)
+```
+
+
+
+### 2) Unemployment rate (seasonally adjusted): (R-squared = 0.005467)
+
+```{r, warning = FALSE}
+unemployment_FBI <- lm(avg_hatecrimes_per_100k_fbi ~ share_unemployed_seasonal, data = hate_crimes)
+summary(unemployment_FBI)
+
+ggplot(data = hate_crimes, aes(x = share_unemployed_seasonal, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.01998)
+
+```{r}
+unemployment_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_unemployed_seasonal, data = hate_crimes_minusDC)
+summary(unemployment_FBI_noDC)
+```
+
+### 3) Share of the population living in a metro area: (R-squared = 0.04403)
+
+```{r, warning = FALSE}
+metro_FBI <- lm(avg_hatecrimes_per_100k_fbi ~ share_population_in_metro_areas, data = hate_crimes)
+summary(metro_FBI)
+
+ggplot(data = hate_crimes, aes(x = share_population_in_metro_areas, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.009974)
+
+```{r}
+metro_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_population_in_metro_areas, data = hate_crimes_minusDC)
+summary(metro_FBI_noDC)
+```
+
+### 4) Share of the population with a high school degree: (R-squared = 0.02694)
+
+```{r, warning = FALSE}
+high_school_FBI <-lm(avg_hatecrimes_per_100k_fbi ~ share_population_with_high_school_degree, data = hate_crimes)
+summary(high_school_FBI)
+
+ggplot(data = hate_crimes, aes(x = share_population_with_high_school_degree, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.05112)
+
+```{r}
+high_school_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_population_with_high_school_degree, data = hate_crimes_minusDC)
+summary(high_school_FBI_noDC)
+```
+
+### 5) Share of non-citizens: (R-squared = 0.09054)
+
+```{r, warning = FALSE}
+noncitizens_FBI <-lm(avg_hatecrimes_per_100k_fbi ~ share_non_citizen, data = hate_crimes)
+summary(noncitizens_FBI)
+
+ggplot(data = hate_crimes, aes(x = share_non_citizen, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+
+Minus D.C. (R-squared = 0.02562)
+
+```{r}
+noncitizens_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_non_citizen, data = hate_crimes_minusDC)
+summary(noncitizens_FBI_noDC)
+```
+
+### 6) Share of white poverty: (R-squared = 0.06765)
+
+```{r, warning = FALSE}
+white_poverty_FBI <- lm(avg_hatecrimes_per_100k_fbi ~ share_white_poverty, data = hate_crimes)
+summary(white_poverty_FBI)
+
+ggplot(data = hate_crimes, aes(x = share_white_poverty, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.003741)
+
+```{r}
+white_poverty_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_white_poverty, data = hate_crimes_minusDC)
+summary(white_poverty_FBI_noDC)
+```
+
+### 7) Gini index (measure of inequality): (R-squared = 0.1775)
+
+```{r, warning = FALSE}
+gini_FBI <- lm(avg_hatecrimes_per_100k_fbi ~ gini_index, data = hate_crimes)
+summary(gini_FBI)
+
+ggplot(data = hate_crimes, aes(x = gini_index, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.003151)
+
+```{r}
+gini_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ gini_index, data = hate_crimes_minusDC)
+summary(gini_FBI_noDC)
+```
+
+### 8) Share of residents who are non-white: (R-squared = 0.006976)
+
+```{r, warning = FALSE}
+nonwhite_FBI <- lm(avg_hatecrimes_per_100k_fbi ~ share_non_white, data = hate_crimes)
+summary(nonwhite_FBI)
+
+ggplot(data = hate_crimes, aes(x = share_non_white, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+
+Minus D.C. (R-squared = 0.04613)
+
+```{r}
+nonwhite_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_non_white, data = hate_crimes_minusDC)
+summary(nonwhite_FBI_noDC)
+```
+
+### 9) Share of voters who voted for Trump in 2016: (R-squared = 0.2546)
+
+```{r, warning = FALSE}
+trump_FBI <- lm(avg_hatecrimes_per_100k_fbi ~ share_voters_voted_trump, data = hate_crimes)
+summary(trump_FBI)
+
+ggplot(data = hate_crimes, aes(x = share_voters_voted_trump, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.02999)
+
+```{r}
+trump_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_voters_voted_trump, data = hate_crimes_minusDC)
+summary(trump_FBI_noDC)
+```
+
+
+For the FBI data, the explanatory variables with the three highest correlations were: 
+
+1) `share_voters_voted_trump` (R-squared = 0.2546, r = -0.504)
+
+2) `gini_index` (R-squared = 0.1775, r = 0.421)
+
+3) `median_household_income` (R-squared = 0.1013, r = 0.318)
+
+
+When the Washington, D.C. outlier was removed, the three most correlated variables were:
+
+1) `median_household_income` (R-squared = 0.05863, r = 0.242)
+
+2) `share_population_with_high_school_degree` (R-squared = 0.05112, r = 0.226)
+
+3) `share_non_white` (R-squared = 0.04613, r = 0.215)
+
+The correlated variables are relatively different, with only median household income appearing in both lists.
+
+
+
+### Fitting the best model
+
+In order to fit the best model, backward-elimination was used. The best fit model was calculated while including the data for Washington, D.C. Below is the model with all variables included.
+
+```{r, warning = FALSE}
+
+FBI_model_all <- lm(avg_hatecrimes_per_100k_fbi ~ median_household_income + share_unemployed_seasonal + share_population_in_metro_areas + share_population_with_high_school_degree + share_non_citizen + share_white_poverty + gini_index + share_non_white + share_voters_voted_trump, data = hate_crimes)
+summary(FBI_model_all)
+
+```
+
+
+The best model included only two variables that were statistically significant, `share_population_with_high_school_degree` (p-value = 3.29e-05) and `gini_index` (p-value = 5.55e-07)
+
+```{r, warning = FALSE}
+FBI_model_best <- lm(avg_hatecrimes_per_100k_fbi ~ share_population_with_high_school_degree + gini_index,  data = hate_crimes)
+summary(FBI_model_best)
+```
+
+This model has the equation:
+
+avg_hatecrimes_per_100k_fbi = (31.287 x share_population_with_high_school_degree) + (64.324 x gini_index) - 54.017 
+
+
+## Using SPLC Data
+
+The same calculations as described above were also completed for the SPLC data.
+
+
+### 1) Median household income: (R-squared = 0.123)
+
+```{r, warning = FALSE}
+income_SPLC <- lm(hate_crimes_per_100k_splc ~ median_household_income, data = hate_crimes)
+summary(income_SPLC)
+
+ggplot(data = hate_crimes, aes(x = median_household_income, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+
+Minus D.C. (R-squared = 0.08232)
+
+```{r}
+income_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ median_household_income, data = hate_crimes_minusDC)
+summary(income_SPLC_noDC)
+```
+
+
+### 2) Unemployment rate (seasonally adjusted): (R-squared = 0.006938)
+
+```{r, warning = FALSE}
+unemployment_SPLC <- lm(hate_crimes_per_100k_splc ~ share_unemployed_seasonal, data = hate_crimes)
+summary(unemployment_SPLC)
+
+ggplot(data = hate_crimes, aes(x = share_unemployed_seasonal, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.01729)
+
+```{r}
+unemployment_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_unemployed_seasonal, data = hate_crimes_minusDC)
+summary(unemployment_SPLC_noDC)
+```
+
+### 3) Share of the population living in a metro area: (R-squared = 0.02631)
+
+```{r, warning = FALSE}
+metro_SPLC <- lm(hate_crimes_per_100k_splc ~ share_population_in_metro_areas, data = hate_crimes)
+summary(metro_SPLC)
+
+ggplot(data = hate_crimes, aes(x = share_population_in_metro_areas, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.005875)
+
+```{r}
+metro_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_population_in_metro_areas, data = hate_crimes_minusDC)
+summary(metro_SPLC_noDC)
+```
+
+### 4) Share of the population with a high school degree: (R-squared = 0.09545)
+
+```{r, warning = FALSE}
+high_school_SPLC <-lm(hate_crimes_per_100k_splc ~ share_population_with_high_school_degree, data = hate_crimes)
+summary(high_school_SPLC)
+
+ggplot(data = hate_crimes, aes(x = share_population_with_high_school_degree, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.1776)
+
+```{r}
+high_school_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_population_with_high_school_degree, data = hate_crimes_minusDC)
+summary(high_school_SPLC_noDC)
+```
+
+### 5) Share of non-citizens: (R-squared = 0.0593)
+
+```{r, warning = FALSE}
+noncitizens_SPLC <-lm(hate_crimes_per_100k_splc ~ share_non_citizen, data = hate_crimes)
+summary(noncitizens_SPLC)
+
+ggplot(data = hate_crimes, aes(x = share_non_citizen, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.005073)
+
+```{r}
+noncitizens_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_non_citizen, data = hate_crimes_minusDC)
+summary(noncitizens_SPLC_noDC)
+```
+
+
+### 6) Share of white poverty: (R-squared = 0.08189)
+
+```{r, warning = FALSE}
+white_poverty_SPLC <- lm(hate_crimes_per_100k_splc ~ share_white_poverty, data = hate_crimes)
+summary(white_poverty_SPLC)
+
+ggplot(data = hate_crimes, aes(x = share_white_poverty, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.009772)
+
+```{r}
+white_poverty_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_white_poverty, data = hate_crimes_minusDC)
+summary(white_poverty_SPLC_noDC)
+```
+
+### 7) Gini index (measure of inequality): (R-squared = 0.1085)
+
+```{r, warning = FALSE}
+gini_SPLC <- lm(hate_crimes_per_100k_splc ~ gini_index, data = hate_crimes)
+summary(gini_SPLC)
+
+ggplot(data = hate_crimes, aes(x = gini_index, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.01286)
+
+```{r}
+gini_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ gini_index, data = hate_crimes_minusDC)
+summary(gini_SPLC_noDC)
+```
+
+### 8) Share of residents who are non-white: (R-squared = 0.002262)
+
+```{r, warning = FALSE}
+nonwhite_SPLC <- lm(hate_crimes_per_100k_splc ~ share_non_white, data = hate_crimes)
+summary(nonwhite_SPLC)
+
+ggplot(data = hate_crimes, aes(x = gini_index, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.07141)
+
+```{r}
+nonwhite_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_non_white, data = hate_crimes_minusDC)
+summary(nonwhite_SPLC_noDC)
+```
+
+
+### 9) Share of voters who voted for Trump in 2016: (R-squared = 0.4317)
+
+```{r, warning = FALSE}
+trump_SPLC <- lm(hate_crimes_per_100k_splc ~ share_voters_voted_trump, data = hate_crimes)
+summary(trump_SPLC)
+
+ggplot(data = hate_crimes, aes(x = share_voters_voted_trump, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Minus D.C. (R-squared = 0.1745)
+
+```{r}
+trump_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_voters_voted_trump, data = hate_crimes_minusDC)
+summary(trump_SPLC_noDC)
+```
+
+For the SPLC data, the explanatory variables with the three highest correlations were: 
+
+1) `share_voters_voted_trump` (R-squared = 0.4317, r = -0.657)
+
+2) `median_household_income` (R-squared = 0.123, r = 0.351)
+
+3) `gini_index` (R-squared = 0.1085, r = 0.329)
+
+
+When the Washington, D.C. outlier was removed, the three most correlated variables were:
+
+1) `share_population_with_high_school_degree` (R-squared = 0.1776, r = 0.421)
+
+2) `share_voters_voted_trump` (R-squared = 0.1745, r = 0.273)
+
+3) `median_household_income` (R-squared = 0.08232, r = 0.287)
+
+Just as with the FBI data, the two lists here are different. Median household income and share voters voted Trump are included on both lists, while gini index and share of the population with a high school degree are not.
+
+
+### Finding the top model
+
+In order to fit the best model, backward-elimination was used. The best fit model was calculated while including the data for Washington, D.C. Below is the model with all variables included.
+
+```{r, warning = FALSE}
+
+SPLC_model_all <- lm(hate_crimes_per_100k_splc ~ median_household_income + share_unemployed_seasonal + share_population_in_metro_areas + share_population_with_high_school_degree + share_non_citizen + share_white_poverty + gini_index + share_non_white + share_voters_voted_trump, data = hate_crimes)
+summary(SPLC_model_all)
+
+```
+
+The best model for the SPLC data had more independent variables than the FBI data. The four variables that were statistically significant were `median_household_income` (p-value = 0.04349), `share_population_with_high_school_degree` (p-value = 0.00112), `gini_index` (p-value = 0.02856), and `share_voters_voted_trump` (p-value = 0.00180).
+
+```{r, warning = FALSE}
+
+SPLC_model_best <- lm(hate_crimes_per_100k_splc ~ median_household_income + share_population_with_high_school_degree + gini_index + share_voters_voted_trump, data = hate_crimes)
+summary(SPLC_model_best)
+
+```
+
+The equation for this model is seen below:
+
+hate_crimes_per_100k_splc = (-1.015e-5 x median_household_income) + (3.597 x share_population_with_high_school_degree) + (4.595 x gini_index) - (1.310 x share_voters_voted_trump) - 4.581
+
+
+## How much can these models be trusted?
+
+
+
+### FBI
+
+**1) Linearity:** Does each explanatory variable have a linear relationship with the response variable?
+
+`gini_index`: This variable does not seem to have a linear relationship. There is a strange pattern of points. 
+
+```{r}
+ggplot(data = hate_crimes, aes(x = gini_index, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+`share_population_with_high_school_degree`: For this variable, it is difficult to tell whether there is actually a linear relationship, since there is not a steep line. However, there does not appear to be a relationship of any other type, so it might be reasonable to assume this is linear.
+
+```{r}
+ggplot(data = hate_crimes, aes(x = share_population_with_high_school_degree, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+Due to `gini_index` having an irregular pattern, this condition is not met.
+
+**2) Independence**: Are all of the observations independent of one another?
+
+This condition should be met, since data from one state should not significantly influence data from another state. 
+
+**3) Normality of residuals**: Are all of the residuals normally distributed?
+
+```{r}
+qplot(sample = .resid, data = FBI_model_best, stat = "qq") + ggtitle ("QQ Plot - FBI")
+```
+
+There is not a perfect normal shape here. The center section looks relatively normal, but the two extremes follow a much less normal shape. The residuals are not entirely normally distributed, but they do not appear far enough from the normal line to declare this condition not met. However, this quantile-quantile plot does provide enough evidence of non-normality to raise doubts about the model.
+
+**4) Equal Variance of Residuals**: Are the points relatively equidistant from the least squares line at all x-values?
+
+```{r}
+qplot(x = .fitted, y = .resid, data = FBI_model_best) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  xlab("Fitted values") +
+  ylab("Residuals") + ggtitle ("Residuals vs. Fitted Values - FBI Model")
+```
+
+The points do not appear equidistant from the least squares line across all x-values. This condition does not appear to be entirely met.
+
+**Collinearity?**
+
+```{r}
+hate_crimes %>%
+  select("share_population_with_high_school_degree", "gini_index") %>%
+  ggpairs()
+```
+
+
+Due to inability to clearly meet conditions 1, 3, and 4, this model should be known to not be entirely accurate. However, there does not appear to be any other noticable shape to the data that could replace a linear model, so this model type is likely the best predictor available.
+
+### SPLC
+
+**1) Linearity:** Does each explanatory variable have a linear relationship with the response variable?
+
+`gini_index`: 
+
+```{r}
+ggplot(data = hate_crimes, aes(x = gini_index, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+There does not appear to be a clear linear relationship here. It is likely that the outlier represinting Washington D.C. is influencing the slope of the regression line.
+
+`share_population_with_high_school_degree`: 
+
+```{r}
+ggplot(data = hate_crimes, aes(x = share_population_with_high_school_degree, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+There appears to be a slight positive slope and linear relationship here. This variable appears to meet the condition.
+
+`median_household_income`:
+
+```{r}
+ggplot(data = hate_crimes, aes(x = median_household_income, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+It is difficult to tell whether there is a linear relationship here. Once again the outlier appears to be influencing the slope. However, no shape appears to better fit these data points than a line.
+
+`share_voters_voted_trump`:
+
+```{r}
+ggplot(data = hate_crimes, aes(x = share_voters_voted_trump, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+```
+
+These data points do appear to follow a linear pattern, so they meet this condition.
+
+
+**2) Independence**: Are all of the observations independent of one another?
+
+This condition should be met, since data from one state should not significantly influence data from another state. 
+
+**3) Normality of residuals**: Are all of the residuals normally distributed?
+
+```{r}
+qplot(sample = .resid, data = SPLC_model_best, stat = "qq") + ggtitle("QQ Plot - SPLC")
+```
+
+The data points here do not appear to entirely follow a normal model. The quantile-quantile plot appears to show most points differing from their expected values, though only a little bit. This condition is not clearly met, but also not clearly not met.
+
+**4) Equal Variance of Residuals**: Are the points relatively equidistant from the least squares line at all x-values?
+
+```{r}
+qplot(x = .fitted, y = .resid, data = SPLC_model_best) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  xlab("Fitted values") +
+  ylab("Residuals") +
+  ggtitle ("Residuals vs. Fitted Values - SPLC Model")
+```
+
+The residuals do not appear to have equal variance. Therefore this condition is not met.
+
+
+**Collinearity?**
+
+```{r}
+hate_crimes %>%
+  select("median_household_income", "share_population_with_high_school_degree", "gini_index", "share_voters_voted_trump") %>%
+  ggpairs()
+```
+
+Due to the fact that condition 4 is clearly not met, several variables from condition 1 are not clearly linear, and condition 3 is also not entirely met, it is important to proceed with caution when concluding based on the calculated model.
+
+In addition, most variables in this model appear to show some collinearity. This is logical, since demographic characteristics are often related to one another. Due to this observation, it is important to note that the coefficients for many of the variables are being affected due to the fact that collinear variables are also included in the model. 
+
+
+# Conclusion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
