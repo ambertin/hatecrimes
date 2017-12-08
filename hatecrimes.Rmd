@@ -44,7 +44,7 @@ In order to answer these questions, we paired each explanatory variable with the
 
 # Data
 
-The dataset comes from FiveThirtyEight and is a combination of hate crime data from the Federal Bureau of Investigation (FBI) and Southern Poverty Law Center (SPLC) and data on economic and ethnic demographics collected by the US Census Bureau.
+The dataset comes from FiveThirtyEight and is a combination of hate crime data from the Federal Bureau of Investigation (FBI) and Southern Poverty Law Center (SPLC) and data on economic and ethnic demographics collected by the US Census Bureau. The FBI hate crime rate is an average of the hate crime rates from 2010 to 2015, and the SPLC hate crime rate is from 2016.
 
 All of the variables except `state` are continuous and numerical:
 
@@ -80,6 +80,7 @@ Pro-Publica did an [investigation](https://www.propublica.org/article/why-americ
 
 Each state's hate crime rate accuracy is also likely to be different, as states define hate crimes differently from one another--for example, Alabama's hate-crime statute does not apply to crimes based on sexual orientation, while Connecticut's statute includes crimes based on sexual orientation as well as gender identity. As a result, many cases in that may be considered hate crimes in some states are not reported as such in others.
 
+Since the data are all numerical, and there are many variables recorded, we chose to use multiple regression to answer our research questions, adjusting for the number of variables by looking at R-squared-adj.
 
 # Results
 
@@ -620,7 +621,23 @@ In addition, most variables in this model appear to show some collinearity. This
 
 # Conclusion
 
+# References
 
+Fivethirtyeight. “Fivethirtyeight/Data.” *GitHub*, 
+  github.comfivethirtyeight/data/blob/master/hate-crimes/hate_crimes.csv.
+
+Fivethirtyeight. "Education, Not Income, Predicted Who Would Vote for Trump." 
+  *FiveThirtyEight*, 22 Nov. 2016, http://fivethirtyeight.com/features/
+  education-not-income-predicted-who-would-vote-for-trump/.
+
+Federal Bureau of Investigation (FBI). "Hate Crimes." *FBI.gov*, 
+  https://www.fbi.gov/investigate/civil-rights/hate-crimes.
+
+Southern Poverty Law Center (SPLC). “Report A Hate Incident.” *splcenter.org*, 
+  https://www.splcenter.org/reporthate
+
+Schwencke, Ken. “Why America Fails at Gathering Hate Crime Statistics.” *ProPublica*, 4 Dec. 
+  2017. https://www.propublica.org/article/why-america-fails-at-gathering-hate-crime-statistics
 
 
 
