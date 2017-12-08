@@ -23,11 +23,11 @@ hate_crimes_minusDC <- hate_crimes %>%
 
 # Abstract
 
-This report considers the economic and ethnic demographics of states and how they are connected with hate crime rate. In order to determine which characteristics were most strongly correlated with hate crimes, several variables including Gini Index, median household income, and the share of the population with a high school degree were compared with hate crime rates as measured by the Federal Bureau of Investigation (FBI) and Southern Poverty Law Center (SPLC). It was determined that few variables had a very strong correlation, and the variables among both hate crime rates that were the most correlated were associated with the proportion of Trump voters, median income, and inequality. Multiple regression models were also created for each hate crime rate source, though collinearity among some of the variables likely affected their coefficients.
+This report considers the economic and ethnic demographics of states and how they are connected with states' hate crime rates. In order to determine which characteristics were most strongly correlated with hate crimes, several variables including Gini Index, electoral results (2016 Presidential), and the share of the population with a high school degree were compared with hate crime rates as measured by the Federal Bureau of Investigation (FBI) and Southern Poverty Law Center (SPLC). It was determined that few variables had a very strong correlation, and the variables among both hate crime rates that were the most correlated were associated with the proportion of Trump voters, median income, and inequality. Multiple regression models were also created for each hate crime rate source, though collinearity among some of the variables likely affected their coefficients.
 
 # Introduction
 
-Mentions of hate crimes have appeared in larger numbers the news lately than in the past, with a noticeable increase in incidents since Donald Trump's election in 2016. This study attempted to determine how demographic statistics affect hate crimes, in order to better learn how to predict them. Several specific questions of interest include:
+Mentions of hate crimes in the news and through social media have appeared in larger numbers recently than in the past, with a distinct spike in incidents since Donald Trump's election in November 2016. We wanted to see whether Trump voter rate was associated with hate crimes. We were also interested in what factors determine hate crime rate, and whether certain demographic statistics affect hate crimes more than others, in order to better learn how to predict them. Several specific questions of interest include:
 
 1) Is the Trump voter rate strongly, and positively, associated with hate crimes? Is this the same for the share of the population with a high school degree?
 
@@ -35,7 +35,8 @@ Due to the increase in hate crimes after the 2016 election, and the fact that on
 
 2) Which demographic statistics are the best predictors of hate crimes? Can we develop a multiple regression model to predict hate crime rate?
 
-This information would be important in order to help law enforcement agencies determine where special lookout for hate crimes should be used, and could also be used by people who are looking to move to a particular area. If a person is in a group that is affected by hate crimes (LGBT, Jewish, etc.), then that person could look at the demographics for the place they are interested in moving to and determine the danger level of it.
+This information would be important in order to help law enforcement agencies determine where special lookout for hate crimes should be used, and could also be used by people who are looking to move to a particular area. If a person is in a group that is affected by hate crimes (LGBT, Jewish, etc.), then that person could look at the demographics for the place they are interested in moving to and determine the danger level of it. 
+Additionally, this data would be helpful in identifying certain factors wthin states (and the same model could be used within states for identifying communities) that can be targeted (such as economic inequality, uneducation) to improve in order to lower the hate crime rate.
 
 
 In order to answer these questions, we paired each explanatory variable with the two response variables - FBI hate crime rate and SPLC hate crime rate - to determine the correlations. Then, we performed backward elimination to determine the best multiple regression model for each data source.
@@ -71,13 +72,13 @@ The sample, each state's summary, is taken from the population of the entire Uni
 
 In order to calculate hate crime rates, the FBI bases its rate on official criminal charges for hate crime, and does not provide a way for individuals to submit incident reports.
 
-The SPLC hate crime rate is based on a collection of incident reports submitted on [their website](https://www.splcenter.org/reporthate). As a result, this rate is much lower than the FBI rate for all states.
+The SPLC hate crime rate is based on a collection of incident reports submitted on [their website](https://www.splcenter.org/reporthate). As a result, this self-reported rate is much lower than the FBI rate for all states.
 
 It is important to note that both reported hate crime rates are likely to be inaccurate when compared to the true rate. This is due to the fact that many hate crimes are not reported, either by the victim to local law enforcement or from police to the FBI. In order for the FBI to receive hate crime reports, local law enforcement agencies must actively collect and submit this data to the state, which then submits it to the FBI. This often does not happen. Thousands of police agencies have also completely opted out of the FBI's hate crime program, and don't report any data. 
 
 Pro-Publica did an [investigation](https://www.propublica.org/article/why-america-fails-at-gathering-hate-crime-statistics) into this problem, and found that while only 6,212 hate crimes were reported to the FBI in 2016, true estimates place the number at 250,000 hate crimes. This means that the hate crime data available is likely quite inaccurate.
 
-Each state's hate crime rate accuracy is also likely to be different, as states define hate crimes differently from one another--for example, Alabama's hate-crime statute does not apply to crimes based on sexual orientation. As a result, many cases in that may be considered hate crimes in some states are not reported as such in others.
+Each state's hate crime rate accuracy is also likely to be different, as states define hate crimes differently from one another--for example, Alabama's hate-crime statute does not apply to crimes based on sexual orientation, while Connecticut's statute includes crimes based on sexual orientation as well as gender identity. As a result, many cases in that may be considered hate crimes in some states are not reported as such in others.
 
 
 # Results
