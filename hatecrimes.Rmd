@@ -82,7 +82,11 @@ Each state's hate crime rate accuracy is also likely to be different, as states 
 
 Since the data are all numerical, and there are many variables recorded, we chose to use multiple regression to answer our research questions, adjusting for the number of variables by looking at R-squared-adj.
 
+# Methods
+
+
 # Results
+### (Includes Basic Descriptive Statistics)
 
 In order determine which variables were most strongly correlated with hate crime rate, a regression line for each explanatory variable was calculated. This was completed twice: once for the FBI response variable, and once for the SPLC response variable. 
 
@@ -488,7 +492,7 @@ The equation for this model is seen below:
 hate_crimes_per_100k_splc = (-1.015e-5 x median_household_income) + (3.597 x share_population_with_high_school_degree) + (4.595 x gini_index) - (1.310 x share_voters_voted_trump) - 4.581
 
 
-## How much can these models be trusted?
+## How much can these models be trusted? (Conditions)
 
 
 
