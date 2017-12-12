@@ -29,12 +29,12 @@ This report considers the economic and ethnic demographics of states and how the
 
 Mentions of hate crimes in the news and through social media have appeared in larger numbers recently than in the past, with a distinct spike in incidents since Donald Trump's election in November 2016. We wanted to see whether Trump voter rate was associated with hate crimes. We were also interested in what factors determine hate crime rate, and whether certain demographic statistics affect hate crimes more than others, in order to better learn how to predict them. Several specific questions of interest include:
 
-1) Are Trump voter rate and share of population with a high school degree strongly associated with hate crimes? Do the directions of their relationships match what is expected?
+1) *1) Are Trump voter rate and share of population with a high school degree the two variables most strongly associated with hate crimes? Do the directions of their relationships match what is expected?*
 
 Due to the increase in hate crimes after the 2016 election, and the fact that on average, Trump voters had a lower level of education than Clinton voters ([source](http://fivethirtyeight.com/features/education-not-income-predicted-who-would-vote-for-trump/)), we study was particularly interested in testing the hypothesis that `share_voters_voted_Trump` and `share_population_with_high_school_degree` are both more strongly correlated with hate crime rate than the other variables. Additionally, based on background information, we wanted to determine whether their directions matched what was expected: a positive correlation for Trump voter rate and a negative correlation for share of the population with a high school degree. 
 
 
-2) Which demographic statistics are the best predictors of hate crimes? What model can we create to predict hate crime rate?
+2) What model can we create to best predict hate crime rate?
 
 This information would be important in order to help law enforcement agencies determine where special lookout for hate crimes should be used, and could also be used by people who are looking to move to a particular area. If a person is in a group that is affected by hate crimes (LGBT, Jewish, etc.), then that person could look at the demographics for the place they are interested in moving to and determine the danger level of it. 
 
@@ -514,6 +514,8 @@ hate_crimes_per_100k_splc = (-1.015e-5 x median_household_income) + (3.597 x sha
 
 ## How much can these models be trusted? (Conditions)
 
+In order to determine whether it is valid to use these models for inference, it is important to check several conditions. We checked these for both the FBI model and the SPLC model.
+
 
 ### FBI
 
@@ -643,6 +645,40 @@ In addition, most variables in this model appear to show some collinearity. This
 
 
 # Conclusion
+
+
+Based on the calculations and results, the two research questions can be answered as follows:
+
+**1) Are Trump voter rate and share of population with a high school degree the two variables most strongly associated with hate crimes? Do the directions of their relationships match what is expected?**
+
+Using both the FBI and SPLC data (including the data for Washington D.C.), `share_voters_voted_trump` is one of the most correlated variables. `share_population_with_high_school_degree` is not. When checking the correlation direction for `share_voters_voted_trump`, we found that it was NOT what was expected. We predicted a positive correlation, but found a negative one. Further research would likely be required to determine why that was the case.
+
+Since Washington D.C. is a clear outlier, as it is a city while all other observations represent entire states, we removed it from the dataset and completed the same calculations once again to determine if it was having an effect on our results. In this situation, one of our two predicted variables, `share_population_with_high_school_degree` was one of the most correlated variables with the FBI hate crime rate. For the SPLC hate crime rate, our prediction was correct: `share_voters_voted_trump` and `share_population_with_high_school_degree` were the two variables with the strongest corelations. However, neither variable's correlation direction matched what had been predicted. `share_voters_voted_trump` once again had a negative correlation, while `share_population_with_high_school_degree` had a positive correlation when a negative one was expected.
+
+
+**2) What model can we create to best predict hate crime rate?**
+
+The two models we created, using backward-selection with p-values were:
+
+
+*`avg_hatecrimes_per_100k_fbi` = (31.287 x `share_population_with_high_school_degree`) + (64.324 x `gini_index`) - 54.017*
+
+*`hate_crimes_per_100k_splc` = (-1.015e-5 x `median_household_income`) + (3.597 x `share_population_with_high_school_degree`) + (4.595 x `gini_index)` - (1.310 x `share_voters_voted_trump`) - 4.581*
+
+In both models, `gini_index` and `share_population_with_high_school_degree` were significant variables. The FBI model only had two significant variables, which is very few considering the number of explanatory variables, and the SPLC model only had four. The SPLC model appears to also be a better predictor of hate crime rate, with an adjusted R-squared value of 0.5248 compared with the FBI value of 0.408. It is important to note, however, that neither model is particularly strong. While the SPLC model is better than the FBI, 0.5248 is still a relatively small R-squared.
+
+Additionally, neither model meets all of the conditions for inference. Constant variability and normality of residuals are in question for both models, as well as independence. Since the states are not independent observations, values in some states may be affecting others. Additionally, there is a significant amount of collinearity between the variables included in the models. Since many economic and demographic statistics are interrelated, including multiple in the model affects the coefficients of all of them. However, since almost all of the variables are strongly correlated with one another, there is no way to remove variables from the model until none of them are associated.
+
+The difficulty with studying, and forming predictive models, based on hate crime data, is that the data we have available is both connected and inaccurate to reality. The reported hate crime rates of both the FBI and SPLC are likely significantly lower than the true hate crime rates, and state crime rates themselves vary due to hate crime laws not being uniform across states. 
+
+In order to form a more accurate model, we would have to look at a more complete record of hate crime data. To obtain this, hate crime laws would need to be made uniform across all states, and states would need to report the majority of hate crimes that happened. This would help solve some problems with the model, but of course could not solve the problem of independence--a problem which appears impossible to fix. One solution that could help improve this could be to possibly create cases that represent a smaller area, perhaps each case being a county rather than a state. Unfortunately, this is not data available to the public right now.
+
+The model as it exists, could certainly serve to help average individuals belonging to minority groups that can be targeted in hate crimes determine areas they might want to avoid living in. While it is not perfect, it is better than no model at all, and we do not currently have data available to create a model that is much better than this one.
+
+However, there are certainly more questions to be asked so that we can learn more. Specifically, what is causing the opposite associations from expectation that we observed with `share_voters_voted_trump` and `share_population_with_high_school_degree`? How would the hate crime model change if we considered smaller areas as our cases? 
+
+Additionally, further breakdown of hate crime rates by type of crime--anti-LGBT, anti-Muslim, anti-Black, etc.--could allow for more models that would help individuals of certain groups. For instance, if we had data on the anti-LGBT hate crime rate of an area, and the demographic statistics (which might also then include information about the LGBT population), we could create a model for LGBT individuals which specifically predicts the level of hate crime against them, rather than just hate crimes in general. 
+
 
 # References
 
