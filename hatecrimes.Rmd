@@ -29,17 +29,16 @@ This report considers the economic and ethnic demographics of states and how the
 
 Mentions of hate crimes in the news and through social media have appeared in larger numbers recently than in the past, with a distinct spike in incidents since Donald Trump's election in November 2016. We wanted to see whether Trump voter rate was associated with hate crimes. We were also interested in what factors determine hate crime rate, and whether certain demographic statistics affect hate crimes more than others, in order to better learn how to predict them. Several specific questions of interest include:
 
-1) Is the Trump voter rate strongly, and positively, associated with hate crimes? Is this the same for the share of the population with a high school degree?
+1) Are Trump voter rate and share of population with a high school degree strongly associated with hate crimes? Do the directions of their relationships match what is expected?
 
-Due to the increase in hate crimes after the 2016 election, and the fact that on average, Trump voters had a lower level of education than Clinton voters ([source](http://fivethirtyeight.com/features/education-not-income-predicted-who-would-vote-for-trump/)), this study was particularly interested in testing the hypothesis that `share_voters_voted_Trump` and `share_population_with_high_school_degree` are both more strongly correlated with hate crime rate than the other variables.
+Due to the increase in hate crimes after the 2016 election, and the fact that on average, Trump voters had a lower level of education than Clinton voters ([source](http://fivethirtyeight.com/features/education-not-income-predicted-who-would-vote-for-trump/)), we study was particularly interested in testing the hypothesis that `share_voters_voted_Trump` and `share_population_with_high_school_degree` are both more strongly correlated with hate crime rate than the other variables. Additionally, based on background information, we wanted to determine whether their directions matched what was expected: a positive correlation for Trump voter rate and a negative correlation for share of the population with a high school degree. 
 
-2) Which demographic statistics are the best predictors of hate crimes? Can we develop a multiple regression model to predict hate crime rate?
+
+2) Which demographic statistics are the best predictors of hate crimes? What model can we create to predict hate crime rate?
 
 This information would be important in order to help law enforcement agencies determine where special lookout for hate crimes should be used, and could also be used by people who are looking to move to a particular area. If a person is in a group that is affected by hate crimes (LGBT, Jewish, etc.), then that person could look at the demographics for the place they are interested in moving to and determine the danger level of it. 
+
 Additionally, this data would be helpful in identifying certain factors wthin states (and the same model could be used within states for identifying communities) that can be targeted (such as economic inequality, uneducation) to improve in order to lower the hate crime rate.
-
-
-In order to answer these questions, we paired each explanatory variable with the two response variables - FBI hate crime rate and SPLC hate crime rate - to determine the correlations. Then, we performed backward elimination to determine the best multiple regression model for each data source.
 
 
 # Data
@@ -84,13 +83,27 @@ Since the data are all numerical, and there are many variables recorded, we chos
 
 # Methods
 
+In order to answer both research questions, we performed one set of calculations using the FBI response variable and another set with the SPLC response variable.
+
+In each set of calculations, to answer the first research question, we paired each explanatory variable with the hate crime rate and determined the direction and correlation coefficient. We then identified the three explanatory variables with the strongest correlations, and determined:
+
+  1) Whether `share_voters_voted_trump` and `share_population_with_high_school_degree` were the top two most correlated variables (in either order).
+  
+  2) If they were, did the direction of their relationship match what we expected?
+
+While we did not remove any outliers for the official results, we also computed a second round of calculations, the same way as described previously, on the dataset with the outlier (Washington, D.C.) removed. This was done in order to see what effect the outlier was having on our results.
+
+To answer the second research question, we performed backward elimination using p-values to determine the best multiple regression model for each data source.
+
+Finally, we reported whether the models we created to answer the second question met the conditions for inference.
+
 
 # Results
 ### (Includes Basic Descriptive Statistics)
 
 In order determine which variables were most strongly correlated with hate crime rate, a regression line for each explanatory variable was calculated. This was completed twice: once for the FBI response variable, and once for the SPLC response variable. 
 
-During these calculations, it became clear that the FBI hate crime rate for Washington D.C. was an outlier, at more than twice the size of the next largest rate. While not used in the final conclusions, the regression lines for each variable were recalculated with the data for Washington D.C. removed, in order to determine if the most strongly correlated explanatory variables were different.
+During these calculations, it became clear that the FBI hate crime rate for Washington D.C. was an outlier, at more than twice the size of the next largest rate. This is likely due to the fact that Washington, D.C. is a city, while all of the other cases are states. While not used in the final conclusions, the regression lines for each variable were recalculated with the data for Washington D.C. removed, in order to determine if the most strongly correlated explanatory variables were different.
 
 The SPLC hate crime rate for Washington, D.C. also appeared to be an outlier, so the same calculations without the district included were done just as with the FBI data.
 
@@ -257,6 +270,8 @@ For the FBI data, the explanatory variables with the three highest correlations 
 
 3) `median_household_income` (R-squared = 0.1013, r = 0.318)
 
+Of the two variables that we predicted would be the most correlated, only one appears in this list. Additionally, the direction of the relationship does not match what was expected. `share_voters_voted_trump` has a negative relationship with hate crime rate here.
+
 
 When the Washington, D.C. outlier was removed, the three most correlated variables were:
 
@@ -266,8 +281,9 @@ When the Washington, D.C. outlier was removed, the three most correlated variabl
 
 3) `share_non_white` (R-squared = 0.04613, r = 0.215)
 
-The correlated variables are relatively different, with only median household income appearing in both lists.
+In this list, the second variable that we predicted would be most correlated appears, though `share_voters_voted_trump` is no longer included. The direction of the relationship between `share_population_with_high_school_degree` also does not match what we expected--it is positive rather than negative.
 
+The correlated variables with and without Washington D.C. are relatively different, with only median household income appearing in both lists.
 
 
 ### Fitting the best model
@@ -456,13 +472,17 @@ For the SPLC data, the explanatory variables with the three highest correlations
 3) `gini_index` (R-squared = 0.1085, r = 0.329)
 
 
+Once again, of the two variables that we predicted would be the most correlated, only one appears in this list. Additionally, the direction of the relationship does not match what was expected. `share_voters_voted_trump` has a negative relationship with hate crime rate here.
+
 When the Washington, D.C. outlier was removed, the three most correlated variables were:
 
 1) `share_population_with_high_school_degree` (R-squared = 0.1776, r = 0.421)
 
-2) `share_voters_voted_trump` (R-squared = 0.1745, r = 0.273)
+2) `share_voters_voted_trump` (R-squared = 0.1745, r = -0.273)
 
 3) `median_household_income` (R-squared = 0.08232, r = 0.287)
+
+In this situation, both variables we predicted would be the top two are in the expected positions. However, once again, both of their directions are opposite from what was predicted.
 
 Just as with the FBI data, the two lists here are different. Median household income and share voters voted Trump are included on both lists, while gini index and share of the population with a high school degree are not.
 
@@ -495,7 +515,6 @@ hate_crimes_per_100k_splc = (-1.015e-5 x median_household_income) + (3.597 x sha
 ## How much can these models be trusted? (Conditions)
 
 
-
 ### FBI
 
 **1) Linearity:** Does each explanatory variable have a linear relationship with the response variable?
@@ -516,7 +535,7 @@ Due to `gini_index` having an irregular pattern, this condition is not met.
 
 **2) Independence**: Are all of the observations independent of one another?
 
-This condition should be met, since data from one state should not significantly influence data from another state. 
+We can NOT assume that this condition is met. It is highly likely that since these observations are entire states, and states can be linked, that the cases are dependent on one another.
 
 **3) Normality of residuals**: Are all of the residuals normally distributed?
 
@@ -587,7 +606,7 @@ These data points do appear to follow a linear pattern, so they meet this condit
 
 **2) Independence**: Are all of the observations independent of one another?
 
-This condition should be met, since data from one state should not significantly influence data from another state. 
+We can NOT assume that this condition is met. It is highly likely that since these observations are entire states, and states can be linked, that the cases are dependent on one another.
 
 **3) Normality of residuals**: Are all of the residuals normally distributed?
 
