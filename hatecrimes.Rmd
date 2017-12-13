@@ -1,6 +1,6 @@
 ---
-title: "Project Report"
-author: "Audrey Bertin and Marissa Freed"
+title: "How is Hate Crime Rate Affected by Economic and Ethnic Demographics"
+author: "Group D: Audrey Bertin and Marissa Freed"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: html_document
 ---
