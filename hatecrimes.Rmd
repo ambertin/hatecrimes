@@ -655,6 +655,10 @@ Using both the FBI and SPLC data (including the data for Washington D.C.), `shar
 
 Since Washington D.C. is a clear outlier, as it is a city while all other observations represent entire states, we removed it from the dataset and completed the same calculations once again to determine if it was having an effect on our results. In this situation, one of our two predicted variables, `share_population_with_high_school_degree` was one of the most correlated variables with the FBI hate crime rate. For the SPLC hate crime rate, our prediction was correct: `share_voters_voted_trump` and `share_population_with_high_school_degree` were the two variables with the strongest corelations. However, neither variable's correlation direction matched what had been predicted. `share_voters_voted_trump` once again had a negative correlation, while `share_population_with_high_school_degree` had a positive correlation when a negative one was expected.
 
+It is important to note that, for both of these results, correlation is not the same as causation. Although several of the explanatory variables had relatively large correlations, that does not mean that they directly caused more hate crimes to happen. For instance, with the negative correlation between `share_voters_voted_trump` and hate crime rate, we could not definitively say that removing a significant portion of Trump voters in any given area would increase the hate crime rate. There is no cause and effect implied by this result. 
+
+In order to determine cause and effect, a randomized experiment would have to be completed. However, this would be illegal to conduct since it would involve committing hate crimes. We must be satisfied with correlation in this situation.
+
 
 **2) What model can we create to best predict hate crime rate?**
 
