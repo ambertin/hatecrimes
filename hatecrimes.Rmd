@@ -29,12 +29,12 @@ This report considers the economic and ethnic demographics of states and how the
 
 Mentions of hate crimes in the news and through social media have appeared in larger numbers recently than in the past, with a distinct spike in incidents since Donald Trump's election in November 2016. We wanted to see whether Trump voter rate was associated with hate crimes. We were also interested in what factors determine hate crime rate, and whether certain demographic statistics affect hate crimes more than others, in order to better learn how to predict them. Several specific questions of interest include:
 
-1) *1) Are Trump voter rate and share of population with a high school degree the two variables most strongly associated with hate crimes? Do the directions of their relationships match what is expected?*
+*1) Are Trump voter rate and share of population with a high school degree the two variables most strongly associated with hate crimes? Do the directions of their relationships match what is expected?*
 
 Due to the increase in hate crimes after the 2016 election, and the fact that on average, Trump voters had a lower level of education than Clinton voters ([source](http://fivethirtyeight.com/features/education-not-income-predicted-who-would-vote-for-trump/)), we study was particularly interested in testing the hypothesis that `share_voters_voted_Trump` and `share_population_with_high_school_degree` are both more strongly correlated with hate crime rate than the other variables. Additionally, based on background information, we wanted to determine whether their directions matched what was expected: a positive correlation for Trump voter rate and a negative correlation for share of the population with a high school degree. 
 
 
-2) What model can we create to best predict hate crime rate?
+*2) What model can we create to best predict hate crime rate?*
 
 This information would be important in order to help law enforcement agencies determine where special lookout for hate crimes should be used, and could also be used by people who are looking to move to a particular area. If a person is in a group that is affected by hate crimes (LGBT, Jewish, etc.), then that person could look at the demographics for the place they are interested in moving to and determine the danger level of it. 
 
