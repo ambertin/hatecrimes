@@ -5,7 +5,7 @@ date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: html_document
 ---
 
-```{r setup}
+```{r setup, message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(mosaic)
@@ -122,7 +122,7 @@ summary(income_FBI)
 ggplot(data = hate_crimes, aes(x = median_household_income, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.05863)
+**Minus D.C. (R-squared = 0.05863)**
 
 ```{r}
 income_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ median_household_income, data = hate_crimes_minusDC)
@@ -140,7 +140,7 @@ summary(unemployment_FBI)
 ggplot(data = hate_crimes, aes(x = share_unemployed_seasonal, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.01998)
+**Minus D.C. (R-squared = 0.01998)**
 
 ```{r}
 unemployment_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_unemployed_seasonal, data = hate_crimes_minusDC)
@@ -156,7 +156,7 @@ summary(metro_FBI)
 ggplot(data = hate_crimes, aes(x = share_population_in_metro_areas, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.009974)
+**Minus D.C. (R-squared = 0.009974)**
 
 ```{r}
 metro_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_population_in_metro_areas, data = hate_crimes_minusDC)
@@ -172,7 +172,7 @@ summary(high_school_FBI)
 ggplot(data = hate_crimes, aes(x = share_population_with_high_school_degree, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.05112)
+**Minus D.C. (R-squared = 0.05112)**
 
 ```{r}
 high_school_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_population_with_high_school_degree, data = hate_crimes_minusDC)
@@ -189,7 +189,7 @@ ggplot(data = hate_crimes, aes(x = share_non_citizen, y = avg_hatecrimes_per_100
 ```
 
 
-Minus D.C. (R-squared = 0.02562)
+**Minus D.C. (R-squared = 0.02562)**
 
 ```{r}
 noncitizens_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_non_citizen, data = hate_crimes_minusDC)
@@ -205,7 +205,7 @@ summary(white_poverty_FBI)
 ggplot(data = hate_crimes, aes(x = share_white_poverty, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.003741)
+**Minus D.C. (R-squared = 0.003741)**
 
 ```{r}
 white_poverty_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_white_poverty, data = hate_crimes_minusDC)
@@ -221,7 +221,7 @@ summary(gini_FBI)
 ggplot(data = hate_crimes, aes(x = gini_index, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.003151)
+**Minus D.C. (R-squared = 0.003151)**
 
 ```{r}
 gini_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ gini_index, data = hate_crimes_minusDC)
@@ -238,7 +238,7 @@ ggplot(data = hate_crimes, aes(x = share_non_white, y = avg_hatecrimes_per_100k_
 ```
 
 
-Minus D.C. (R-squared = 0.04613)
+**Minus D.C. (R-squared = 0.04613)**
 
 ```{r}
 nonwhite_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_non_white, data = hate_crimes_minusDC)
@@ -254,7 +254,7 @@ summary(trump_FBI)
 ggplot(data = hate_crimes, aes(x = share_voters_voted_trump, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.02999)
+**Minus D.C. (R-squared = 0.02999)**
 
 ```{r}
 trump_FBI_noDC <- lm(avg_hatecrimes_per_100k_fbi ~ share_voters_voted_trump, data = hate_crimes_minusDC)
@@ -325,7 +325,7 @@ ggplot(data = hate_crimes, aes(x = median_household_income, y = hate_crimes_per_
 ```
 
 
-Minus D.C. (R-squared = 0.08232)
+**Minus D.C. (R-squared = 0.08232)**
 
 ```{r}
 income_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ median_household_income, data = hate_crimes_minusDC)
@@ -342,7 +342,7 @@ summary(unemployment_SPLC)
 ggplot(data = hate_crimes, aes(x = share_unemployed_seasonal, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.01729)
+**Minus D.C. (R-squared = 0.01729)**
 
 ```{r}
 unemployment_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_unemployed_seasonal, data = hate_crimes_minusDC)
@@ -358,7 +358,7 @@ summary(metro_SPLC)
 ggplot(data = hate_crimes, aes(x = share_population_in_metro_areas, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.005875)
+**Minus D.C. (R-squared = 0.005875)**
 
 ```{r}
 metro_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_population_in_metro_areas, data = hate_crimes_minusDC)
@@ -374,7 +374,7 @@ summary(high_school_SPLC)
 ggplot(data = hate_crimes, aes(x = share_population_with_high_school_degree, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.1776)
+**Minus D.C. (R-squared = 0.1776)**
 
 ```{r}
 high_school_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_population_with_high_school_degree, data = hate_crimes_minusDC)
@@ -390,7 +390,7 @@ summary(noncitizens_SPLC)
 ggplot(data = hate_crimes, aes(x = share_non_citizen, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.005073)
+**Minus D.C. (R-squared = 0.005073)**
 
 ```{r}
 noncitizens_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_non_citizen, data = hate_crimes_minusDC)
@@ -407,7 +407,7 @@ summary(white_poverty_SPLC)
 ggplot(data = hate_crimes, aes(x = share_white_poverty, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.009772)
+**Minus D.C. (R-squared = 0.009772)**
 
 ```{r}
 white_poverty_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_white_poverty, data = hate_crimes_minusDC)
@@ -423,7 +423,7 @@ summary(gini_SPLC)
 ggplot(data = hate_crimes, aes(x = gini_index, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.01286)
+**Minus D.C. (R-squared = 0.01286)**
 
 ```{r}
 gini_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ gini_index, data = hate_crimes_minusDC)
@@ -439,7 +439,7 @@ summary(nonwhite_SPLC)
 ggplot(data = hate_crimes, aes(x = gini_index, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.07141)
+**Minus D.C. (R-squared = 0.07141)**
 
 ```{r}
 nonwhite_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_non_white, data = hate_crimes_minusDC)
@@ -456,7 +456,7 @@ summary(trump_SPLC)
 ggplot(data = hate_crimes, aes(x = share_voters_voted_trump, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
-Minus D.C. (R-squared = 0.1745)
+**Minus D.C. (R-squared = 0.1745)**
 
 ```{r}
 trump_SPLC_noDC <- lm(hate_crimes_per_100k_splc ~ share_voters_voted_trump, data = hate_crimes_minusDC)
@@ -523,13 +523,13 @@ In order to determine whether it is valid to use these models for inference, it 
 
 `gini_index`: This variable does not seem to have a linear relationship. There is a strange pattern of points. 
 
-```{r}
+```{r, warning = FALSE}
 ggplot(data = hate_crimes, aes(x = gini_index, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
 `share_population_with_high_school_degree`: For this variable, it is difficult to tell whether there is actually a linear relationship, since there is not a steep line. However, there does not appear to be a relationship of any other type, so it might be reasonable to assume this is linear.
 
-```{r}
+```{r, warning = FALSE}
 ggplot(data = hate_crimes, aes(x = share_population_with_high_school_degree, y = avg_hatecrimes_per_100k_fbi)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
@@ -541,7 +541,7 @@ We can NOT assume that this condition is met. It is highly likely that since the
 
 **3) Normality of residuals**: Are all of the residuals normally distributed?
 
-```{r}
+```{r, warning = FALSE}
 qplot(sample = .resid, data = FBI_model_best, stat = "qq") + ggtitle ("QQ Plot - FBI")
 ```
 
@@ -549,7 +549,7 @@ There is not a perfect normal shape here. The center section looks relatively no
 
 **4) Equal Variance of Residuals**: Are the points relatively equidistant from the least squares line at all x-values?
 
-```{r}
+```{r, warning = FALSE}
 qplot(x = .fitted, y = .resid, data = FBI_model_best) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   xlab("Fitted values") +
@@ -560,7 +560,7 @@ The points do not appear equidistant from the least squares line across all x-va
 
 **Collinearity?**
 
-```{r}
+```{r, Warning = FALSE}
 hate_crimes %>%
   select("share_population_with_high_school_degree", "gini_index") %>%
   ggpairs()
@@ -575,7 +575,7 @@ Due to inability to clearly meet conditions 1, 3, and 4, this model should be kn
 
 `gini_index`: 
 
-```{r}
+```{r, warning = FALSE}
 ggplot(data = hate_crimes, aes(x = gini_index, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
@@ -583,7 +583,7 @@ There does not appear to be a clear linear relationship here. It is likely that 
 
 `share_population_with_high_school_degree`: 
 
-```{r}
+```{r, warning = FALSE}
 ggplot(data = hate_crimes, aes(x = share_population_with_high_school_degree, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
@@ -591,7 +591,7 @@ There appears to be a slight positive slope and linear relationship here. This v
 
 `median_household_income`:
 
-```{r}
+```{r, warning = FALSE}
 ggplot(data = hate_crimes, aes(x = median_household_income, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
@@ -599,7 +599,7 @@ It is difficult to tell whether there is a linear relationship here. Once again 
 
 `share_voters_voted_trump`:
 
-```{r}
+```{r, warning = FALSE}
 ggplot(data = hate_crimes, aes(x = share_voters_voted_trump, y = hate_crimes_per_100k_splc)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
 ```
 
@@ -612,7 +612,7 @@ We can NOT assume that this condition is met. It is highly likely that since the
 
 **3) Normality of residuals**: Are all of the residuals normally distributed?
 
-```{r}
+```{r, warning = FALSE}
 qplot(sample = .resid, data = SPLC_model_best, stat = "qq") + ggtitle("QQ Plot - SPLC")
 ```
 
@@ -620,7 +620,7 @@ The data points here do not appear to entirely follow a normal model. The quanti
 
 **4) Equal Variance of Residuals**: Are the points relatively equidistant from the least squares line at all x-values?
 
-```{r}
+```{r, warning = FALSE}
 qplot(x = .fitted, y = .resid, data = SPLC_model_best) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   xlab("Fitted values") +
@@ -633,7 +633,7 @@ The residuals do not appear to have equal variance. Therefore this condition is 
 
 **Collinearity?**
 
-```{r}
+```{r, warning = FALSE}
 hate_crimes %>%
   select("median_household_income", "share_population_with_high_school_degree", "gini_index", "share_voters_voted_trump") %>%
   ggpairs()
