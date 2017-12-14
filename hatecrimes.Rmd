@@ -43,6 +43,12 @@ Additionally, this data would be helpful in identifying certain factors wthin st
 
 # Data
 
+
+```{r}
+head(hate_crimes)
+```
+
+
 The dataset comes from FiveThirtyEight and is a combination of hate crime data from the Federal Bureau of Investigation (FBI) and Southern Poverty Law Center (SPLC) and data on economic and ethnic demographics collected by the US Census Bureau. The FBI hate crime rate is an average of the hate crime rates from 2010 to 2015, and the SPLC hate crime rate is from 2016.
 
 All of the variables except `state` are continuous and numerical:
