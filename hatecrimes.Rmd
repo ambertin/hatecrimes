@@ -1,8 +1,10 @@
 ---
 title: "How is Hate Crime Rate Affected by Economic and Ethnic Demographics"
 author: "Group D: Audrey Bertin and Marissa Freed"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output: html_document
+date: "December 22, 2017"
+output: 
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, message = FALSE, warning = FALSE}
@@ -45,7 +47,7 @@ Additionally, this data would be helpful in identifying certain factors wthin st
 
 
 ```{r}
-head(hate_crimes)
+hate_crimes
 ```
 
 
